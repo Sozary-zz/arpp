@@ -8,11 +8,11 @@ $.get(
         $("#admin-link").attr("href", "?action=admin");
         $("#admin-link").text("Espace admin");
         $("#disconnect").css("display", "block");
-        window.dispatchEvent(event);
       } else {
       }
     } else {
     }
+    window.dispatchEvent(event);
     $("#top").css("display", "block");
   },
   "json"
