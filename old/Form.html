@@ -1,0 +1,55 @@
+<!-- FORM.html: le formulaire de contact, dispo sur Formulaire1.php à partir de contactez nous -->
+<div class="s-content">
+
+ <div class="row">
+	
+	<div class="comment-respond">
+		<!-- START respond -->
+		<div id="respond">
+			
+			<form action="Formulaire2.php" method="post" enctype="multipart/form-data"
+         autocomplete="off">
+				<fieldset>
+					<legend> <h2> Envoyez nous un message </h2> </legend>
+						<div class="form-field">
+						<input type="text" id="nom" name="nom" class="h-full-width" placeholder="Votre nom"
+             value="" > </br> 
+					</div>
+	
+					<div class="form-field">
+						<input  type="text" id="email" name="email" class="h-full-width"
+              placeholder="E-mail" value=""> </br> 
+					</div>
+					<div class="form-field">
+      <select name="sujet">
+        <option selected="selected"> Sujet </option>
+         <option> Sujet 1 </option>
+        <option> Sujet 2 </option>
+      </select> </br>
+					
+					</div>
+	
+					<div class="message form-field">
+						<textarea name="message" id="message" class="h-full-width"
+              placeholder="Contenu" value="" ></textarea></br> 
+					</div>
+					
+					<p>
+						<label for="reset"><input type="reset" id="reset"
+      class="btn btn--primary btn-wide btn--large h-full-width" value="Effacer" />
+      </label>
+					</p>
+					<p>
+						<label for="submit"><input type="submit" id="submit"
+      class="btn btn--primary btn-wide btn--large h-full-width" value="Envoyer" />
+      </label>
+					</p>
+	
+				</fieldset>
+			</form> 
+			
+		</div>
+	</div>
+</div>
+</div>
+		 
