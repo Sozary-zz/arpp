@@ -12,6 +12,7 @@ $.get(
       }
     } else {
     }
+
     window.dispatchEvent(event);
     $("#top").css("display", "block");
   },
@@ -31,3 +32,5 @@ function disconnect() {
     "json"
   );
 }
+
+var store = {};

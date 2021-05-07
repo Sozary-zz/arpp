@@ -17,6 +17,18 @@ class mainController
         return context::NONE;
     }
 
+    public static function getFormations($request, $context)
+    {
+        echo json_encode(["status" => 200, "formations" => Formation::getFormations()]);
+        return context::NONE;
+    }
+
+    public static function getColloquia($request, $context)
+    {
+        echo json_encode(["status" => 200, "colloquia" => Colloquium::getColloquia()]);
+        return context::NONE;
+    }
+
     public static function disconnect($request, $context)
     {
         $_SESSION['user'] = null;
@@ -26,7 +38,7 @@ class mainController
 
     public static function admin($request, $context)
     {
-        if ($context->user) {
+        if ($_SESSION['user']) {
             return context::SUCCESS;
         }
         return context::ERROR;

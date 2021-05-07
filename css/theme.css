@@ -10251,6 +10251,9 @@ fieldset:disabled .btn {
   .gap-sm-11 {
     gap: 15rem !important;
   }
+  .justify-content-between{
+    justify-content: space-between !important;
+  }
   .justify-content-sm-start {
     -webkit-box-pack: start !important;
     -ms-flex-pack: start !important;
