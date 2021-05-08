@@ -38,6 +38,14 @@ function foreachGenerator() {
   });
 }
 
+function editFormation(elem) {
+  let formationId = $(elem).find(".edit-id").text();
+  window.location.href =
+    window.location.href.split("?action=")[0] +
+    "?action=editEvent&type=formation&id=" +
+    formationId;
+}
+
 function getFormations() {
   return new Promise((resolve, reject) => {
     $.get(
@@ -53,6 +61,7 @@ function getFormations() {
     );
   });
 }
+
 function getColloquia() {
   return new Promise((resolve, reject) => {
     $.get(

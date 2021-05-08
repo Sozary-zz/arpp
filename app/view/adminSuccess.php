@@ -24,8 +24,14 @@
                       data-toggle="tooltip"
                       data-placement="top"
                       title="Editer"
+                      onclick="editFormation(this)"
                     >
                       <i class="fas fa-pencil-alt"></i>
+                      <span
+                        foreach-value="id"
+                        class="edit-id"
+                        style="display: none"
+                      ></span>
                     </button>
                     <button
                       type="button"

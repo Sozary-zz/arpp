@@ -11,9 +11,43 @@ class mainController
         return context::SUCCESS;
     }
 
+    public static function editEvent($request, $context)
+    {
+        if ($context->getSessionAttribute('user')) {
+            if ($request['id'] && $request['type']) {
+                switch ($request['type']) {
+                    case 'formation':
+                        $context->payload = Formation::getById($request['id']);
+                        if (!$context->payload) {
+                            $context->redirect('?action=admin');
+                        }
+                        $context->payload =
+                            json_encode($context->payload);
+                        break;
+                    case 'colloquium':
+                        $context->payload = Colloquium::getById($request['id']);
+                        if (!$context->payload) {
+                            $context->redirect('?action=admin');
+                        }
+                        $context->payload =
+                            json_encode($context->payload);
+                        break;
+                        break;
+                    default:
+                        $context->redirect('?action=admin');
+                        break;
+                }
+            } else {
+                $context->redirect('?action=admin');
+            }
+            return context::SUCCESS;
+        }
+        $context->redirect('?action=login');
+    }
+
     public static function getCurrentUser($request, $context)
     {
-        echo json_encode(["status" => 200, "user" => $_SESSION['user'] ?? null]);
+        echo json_encode(["status" => 200, "user" => $context->getSessionAttribute('user') ?? null]);
         return context::NONE;
     }
 
@@ -31,17 +65,17 @@ class mainController
 
     public static function disconnect($request, $context)
     {
-        $_SESSION['user'] = null;
+        $context->setSessionAttribute('user', null);
         echo json_encode(["status" => 200]);
         return context::NONE;
     }
 
     public static function admin($request, $context)
     {
-        if ($_SESSION['user']) {
+        if ($context->getSessionAttribute('user')) {
             return context::SUCCESS;
         }
-        return context::ERROR;
+        $context->redirect('?action=login');
     }
 
     public static function login($request, $context)
@@ -52,7 +86,7 @@ class mainController
     public static function connect($request, $context)
     {
         $user = User::get($request['login'], $request['password']);
-        $_SESSION['user'] = $user;
+        $context->setSessionAttribute('user', $user);
         echo json_encode(["status" => 200, "user" => $user]);
 
         return context::NONE;
