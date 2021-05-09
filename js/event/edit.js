@@ -21,6 +21,7 @@ function replaceVal() {
 }
 
 function update() {
+  $("#update").css("disabled", "true");
   $("#success-updated").css("display", "none");
   $("#error-updated").css("display", "none");
   let max_places = $("#max-places").val();
@@ -33,6 +34,7 @@ function update() {
     "?action=updateEvent",
     { id, type, name, max_places, date },
     (response) => {
+      $("#update").css("disabled", "false");
       $("#success-loading").css("display", "none");
       if (response.status === 200) {
         $("#success-updated").css("display", "block");

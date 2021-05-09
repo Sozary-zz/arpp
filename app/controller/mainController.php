@@ -35,11 +35,23 @@ class mainController
         return context::NONE;
     }
 
+    private static function checkParameters($toCheck, $parameters)
+    {
+        foreach ($parameters as $parameter) {
+            if (!isset($toCheck[$parameter])) {
+                return false;
+            }
+            if (!$toCheck[$parameter]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static function updateEvent($request, $context)
     {
         if ($context->getSessionAttribute('user')) {
-            if (isset($request['id']) && isset($request['type'])
-                && isset($request['name']) && isset($request['max_places']) && isset($request['date'])) {
+            if (static::checkParameters($request, ['id', 'name', 'type', 'max_places', 'date'])) {
                 switch ($request['type']) {
                     case 'formation':
                         $event = new Event(Formation::getById($request['id']));
@@ -62,7 +74,7 @@ class mainController
 
                 echo json_encode(['status' => 200]);
 
-            } else if (isset($request['type']) && isset($request['name']) && isset($request['max_places']) && isset($request['date'])) {
+            } else if (static::checkParameters($request, ['name', 'type', 'max_places', 'date'])) {
                 $event = new Event();
                 $event->name = $request['name'];
                 $event->date = $request['date'];
@@ -88,9 +100,11 @@ class mainController
 
             } else {
                 echo json_encode(['status' => 403]);
+                return context::NONE;
             }
         } else {
             echo json_encode(['status' => 403]);
+            return context::NONE;
 
         }
         echo json_encode(['status' => 200]);

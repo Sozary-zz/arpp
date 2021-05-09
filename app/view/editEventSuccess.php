@@ -28,7 +28,7 @@
                     Impossible de mettre les données à jour
                 </div>
                 <div class="form-group mb-4 text-center">
-                    <button class="btn btn-lg btn-dark bg-gradient order-0" onclick="update()">Mettre à jour</button>
+                    <button class="btn btn-lg btn-dark bg-gradient order-0" onclick="update()" id="update">Mettre à jour</button>
                 </div>
             </div>
           </div>
