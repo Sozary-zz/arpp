@@ -3,13 +3,6 @@ class Colloquium extends Model
 {
     protected static $table = "colloquium";
 
-    public function __construct($elements)
-    {
-        foreach ($elements as $key => $value) {
-            $this->$key = $value;
-        }
-    }
-
     public static function deleteById($id)
     {
         $elem = static::getById($id);

@@ -1,21 +1,26 @@
 <?php
 class Model
 {
+    protected static $table;
     protected $data = [];
     private $columns = [];
 
-    public function __construct()
+    public function __construct($elements = [])
     {
+        $this->update = $elements != [];
+
+        foreach ($elements as $key => $value) {
+            $this->$key = $value;
+        }
         $this->initColumns();
     }
 
     private function initColumns()
     {
-        $sql = "SHOW COLUMNS FROM " . DB . "." . $this->table;
+        $sql = "SHOW COLUMNS FROM " . DB . "." . static::$table;
         $connection = context::getConnection()->get();
         $result = $connection->query($sql);
         $this->columns = [];
-
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $this->columns[] = ['field' => $row['Field'], 'type' => strpos($row['Type'], 'varchar') !== false ? 's' : 'i'];
@@ -41,11 +46,10 @@ class Model
 
     public function save()
     {
-        $update = false;
         if (!$this->columns) {
             $this->initColumns();
-            $update = true;
         }
+
         $connection = context::getConnection()->get();
         $dataToSend = array_map(function ($column) {
             if (key_exists($column['field'], $this->data)) {
@@ -56,13 +60,13 @@ class Model
                 ];
             }
         }, $this->columns);
-        if ($update) {
-            $sql = 'UPDATE ' . $this->table . ' SET ' . implode(',', array_map(function ($data) {
+
+        if ($this->update) {
+            $sql = 'UPDATE ' . static::$table . ' SET ' . implode(',', array_map(function ($data) {
                 return $data['column'] . ' = ?';
             }, $dataToSend)) . ' where id = ' . $this->event_id . ';';
         } else {
-
-            $sql = 'INSERT INTO ' . $this->table . ' (' . implode(',', array_map(function ($data) {
+            $sql = 'INSERT INTO ' . static::$table . ' (' . implode(',', array_map(function ($data) {
                 return $data['column'];
             }, $dataToSend)) . ') VALUES (' . implode(',', array_map(function ($_) {
                 return '?';
@@ -79,5 +83,6 @@ class Model
         }, $dataToSend));
 
         $stmt->execute();
+        return $stmt->insert_id;
     }
 }

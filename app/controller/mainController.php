@@ -14,7 +14,7 @@ class mainController
     public static function deleteEvent($request, $context)
     {
         if ($context->getSessionAttribute('user')) {
-            if ($request['id'] && $request['type']) {
+            if (isset($request['id']) && isset($request['type'])) {
                 switch ($request['type']) {
                     case 'formation':
                         Formation::deleteById($request['id']);
@@ -37,39 +37,71 @@ class mainController
 
     public static function updateEvent($request, $context)
     {
-        if ($context->getSessionAttribute('user') && $request['id'] && $request['type'] && $request['name'] && $request['max_places'] && $request['date']) {
-            switch ($request['type']) {
-                case 'formation':
-                    $event = new Event(Formation::getById($request['id']));
-                    break;
-                case 'colloquium':
-                    $event = new Event(Colloquium::getById($request['id']));
-                    break;
-                default:
-                    echo json_encode(['status' => 403]);
-                    return context::NONE;
+        if ($context->getSessionAttribute('user')) {
+            if (isset($request['id']) && isset($request['type'])
+                && isset($request['name']) && isset($request['max_places']) && isset($request['date'])) {
+                switch ($request['type']) {
+                    case 'formation':
+                        $event = new Event(Formation::getById($request['id']));
+                        break;
+                    case 'colloquium':
+                        $event = new Event(Colloquium::getById($request['id']));
+                        break;
+                    default:
+                        echo json_encode(['status' => 403]);
+                        return context::NONE;
+                }
+                $event->name = $request['name'];
+                $event->max_places = $request['max_places'];
+                $event->date = $request['date'];
+
+                unset($event->type);
+                unset($event->id);
+
+                $event->save();
+
+                echo json_encode(['status' => 200]);
+
+            } else if (isset($request['type']) && isset($request['name']) && isset($request['max_places']) && isset($request['date'])) {
+                $event = new Event();
+                $event->name = $request['name'];
+                $event->date = $request['date'];
+                $event->max_places = $request['max_places'];
+                $event->booked_places = 0;
+                $event_id = $event->save();
+
+                switch ($request['type']) {
+                    case 'formation':
+                        $formation = new Formation();
+                        $formation->event_id = $event_id;
+                        $formation->save();
+                        break;
+                    case 'colloquium':
+                        $colloquium = new Colloquium();
+                        $colloquium->event_id = $event_id;
+                        $colloquium->save();
+                        break;
+                    default:
+                        echo json_encode(['status' => 403]);
+                        return context::NONE;
+                }
+
+            } else {
+                echo json_encode(['status' => 403]);
             }
-            $event->name = $request['name'];
-            $event->max_places = $request['max_places'];
-            $event->date = $request['date'];
-
-            unset($event->type);
-            unset($event->id);
-
-            $event->save();
-
-            echo json_encode(['status' => 200]);
-
         } else {
             echo json_encode(['status' => 403]);
+
         }
+        echo json_encode(['status' => 200]);
+
         return context::NONE;
     }
 
     public static function editEvent($request, $context)
     {
         if ($context->getSessionAttribute('user')) {
-            if ($request['id'] && $request['type']) {
+            if (isset($request['id']) && isset($request['type'])) {
                 switch ($request['type']) {
                     case 'formation':
                         $context->payload = Formation::getById($request['id']);
@@ -85,6 +117,8 @@ class mainController
                     $context->redirect('?action=admin');
                 }
                 $context->payload = json_encode($context->payload);
+            } else if ($request['type']) {
+                $context->payload = json_encode(['type' => $request['type']]);
             } else {
                 $context->redirect('?action=admin');
             }

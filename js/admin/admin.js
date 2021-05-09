@@ -6,10 +6,16 @@ window.addEventListener("loaded", () => {
 });
 
 function render() {
+  $("*[foreach]").each((i, e) => {
+    $(e).css("display", "none");
+  });
   Promise.all([getFormations(), getColloquia()]).then((data) => {
     store["formations"] = data[0];
     store["colloquia"] = data[1];
     foreachGenerator();
+    $("*[foreach]").each((i, e) => {
+      $(e).css("display", "block");
+    });
   });
 }
 
@@ -26,7 +32,7 @@ function deleteEvent(elem, type) {
     { type, id },
     (response) => {
       if (response.status === 200) {
-        render();
+        window.location.reload();
       } else {
         alert("Impossible de supprimer cet événement");
       }
@@ -62,6 +68,13 @@ function foreachGenerator() {
     }
     $(html).remove();
   });
+}
+
+function addEvent(type) {
+  window.location.href =
+    window.location.href.split("?action=")[0] +
+    "?action=editEvent&type=" +
+    type;
 }
 
 function editFormation(elem) {

@@ -3,13 +3,6 @@ class Formation extends Model
 {
     protected static $table = "formation";
 
-    public function __construct($elements)
-    {
-        foreach ($elements as $key => $value) {
-            $this->$key = $value;
-        }
-    }
-
     public static function deleteById($id)
     {
         $elem = static::getById($id);

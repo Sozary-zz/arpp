@@ -3,12 +3,12 @@
     <div class="row pt-8">
       <div class="col-lg-6 col-xl-6 col-12">
         <div class="card p-3">
-          <div class="card-title"><h3 class="fw-semi-bold">Edition de: </h3><h3 class="fw-semi-bold" jtext="payload.name"></h3></div>
+          <div class="card-title"><h3 class="fw-semi-bold">Edition de <span jtext="payload.type"></span>: </h3><h3 class="fw-semi-bold" jtext="payload.name"></h3></div>
           <div class="card-body">
              <div class="col-sm-9 col-md-12 col-xxl-9">
                 <div class="form-group mb-4">
                     <label for="name">Nom</label>
-                    <input type="text" id="name" placeholder="Entrez votre nom" class="form-control" jvalue="payload.name">
+                    <input type="text" id="name" placeholder="Entrez le nom de l'événement" class="form-control" jvalue="payload.name">
                 </div>
                 <div class="form-group mb-4">
                     <label for="name">Nombre de places maximum</label>
