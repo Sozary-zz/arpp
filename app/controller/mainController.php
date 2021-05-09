@@ -11,6 +11,80 @@ class mainController
         return context::SUCCESS;
     }
 
+    public static function subscribeToEvent($request, $context)
+    {
+        if (static::checkParameters($request, ['id', 'type', 'name', 'email', 'event_id'])) {
+            switch ($request['type']) {
+                case 'formation':
+                    $event = new Event(Formation::getById($request['id']));
+                    break;
+                case 'colloquium':
+                    $event = new Event(Colloquium::getById($request['id']));
+                    break;
+                default:
+                    echo json_encode(['status' => 403]);
+                    return context::NONE;
+            }
+            $subscription = new Subscription();
+            $subscription->email = $request['email'];
+            $subscription->name = $request['name'];
+            $subscription->event_id = $request['event_id'];
+            $subscription->save();
+
+            if ($event->booked_places + 1 > $event->max_places) {
+                echo json_encode(['status' => 403]);
+                return context::NONE;
+            }
+
+            $event->booked_places = $event->booked_places + 1;
+            unset($event->type);
+            unset($event->id);
+            $event->save();
+
+            echo json_encode(['status' => 200]);
+
+        } else {
+            echo json_encode(['status' => 403]);
+        }
+        return context::NONE;
+    }
+
+    public static function subscribe($request, $context)
+    {
+        if (static::checkParameters($request, ['id', 'type'])) {
+            switch ($request['type']) {
+                case 'formation':
+                    $context->payload = Formation::getById($request['id']);
+                    break;
+                case 'colloquium':
+                    $context->payload = Colloquium::getById($request['id']);
+                    break;
+                default:
+                    $context->redirect('?action=home');
+                    break;
+            }
+            if (!$context->payload) {
+                $context->redirect('?action=home');
+            }
+            $context->payload = json_encode($context->payload);
+        } else if (static::checkParameters($request, ['type'])) {
+            $context->payload = json_encode(['type' => $request['type']]);
+        } else {
+            $context->redirect('?action=home');
+        }
+        return context::SUCCESS;
+    }
+
+    public static function formations($request, $context)
+    {
+        return context::SUCCESS;
+    }
+
+    public static function colloquia($request, $context)
+    {
+        return context::SUCCESS;
+    }
+
     public static function deleteEvent($request, $context)
     {
         if ($context->getSessionAttribute('user')) {
@@ -115,7 +189,7 @@ class mainController
     public static function editEvent($request, $context)
     {
         if ($context->getSessionAttribute('user')) {
-            if (isset($request['id']) && isset($request['type'])) {
+            if (static::checkParameters($request, ['id', 'type'])) {
                 switch ($request['type']) {
                     case 'formation':
                         $context->payload = Formation::getById($request['id']);

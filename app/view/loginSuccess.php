@@ -1,4 +1,4 @@
-<section class="py-0" id="contact">
+<section class="py-0" id="subscribe">
     <div class="bg-holder"
         style="background-image:url(images/how-it-works.png);background-position:center bottom;background-size:cover;">
     </div>

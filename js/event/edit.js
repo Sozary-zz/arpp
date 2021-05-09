@@ -1,24 +1,6 @@
 window.addEventListener("loaded", () => {
   replaceVal();
 });
-function replaceVal() {
-  $("*[jtext]").each((index, item) => {
-    try {
-      let variable = eval($(item).attr("jtext"));
-      $(item).text(variable);
-    } catch (e) {
-      $(item).text("{{" + $(item).attr("jtext") + "}}");
-    }
-  });
-  $("*[jvalue]").each((index, item) => {
-    try {
-      let variable = eval($(item).attr("jvalue"));
-      $(item).val(variable);
-    } catch (e) {
-      $(item).val("{{" + $(item).attr("jvalue") + "}}");
-    }
-  });
-}
 
 function update() {
   $("#update").css("disabled", "true");

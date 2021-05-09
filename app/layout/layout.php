@@ -66,6 +66,16 @@
                 >
               </li>
               <li class="nav-item px-2">
+                <a class="nav-link fw-medium" href="?action=formations"
+                  >Formations</a
+                >
+              </li>
+              <li class="nav-item px-2">
+                <a class="nav-link fw-medium" href="?action=colloquia"
+                  >Collaques</a
+                >
+              </li>
+              <li class="nav-item px-2">
                 <a
                   class="nav-link fw-medium"
                   href="?action=login"

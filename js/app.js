@@ -34,3 +34,50 @@ function disconnect() {
 }
 
 var store = {};
+function replaceVal() {
+  $("*[jtext]").each((index, item) => {
+    try {
+      let variable = eval($(item).attr("jtext"));
+      $(item).text(variable);
+    } catch (e) {
+      $(item).text("{{" + $(item).attr("jtext") + "}}");
+    }
+  });
+  $("*[jvalue]").each((index, item) => {
+    try {
+      let variable = eval($(item).attr("jvalue"));
+      $(item).val(variable);
+    } catch (e) {
+      $(item).val("{{" + $(item).attr("jvalue") + "}}");
+    }
+  });
+}
+
+function foreachGenerator() {
+  $("*[foreach]").each((index, item) => {
+    let variable = $(item).attr("foreach");
+    let html = $(item).get();
+    let parent = $(item).parent();
+
+    if (variable in store) {
+      variable = store[variable];
+      variable.forEach((elem, index) => {
+        let toInsert = $(html).clone();
+        $(toInsert)
+          .find("*[foreach-value]")
+          .each((index, placeToInsertValue) => {
+            let valueToInsert = $(placeToInsertValue).attr("foreach-value");
+            if (typeof elem == "object") {
+              if (valueToInsert in elem) {
+                $(placeToInsertValue).text(elem[valueToInsert]);
+              }
+            } else if (typeof elem == "string") {
+              $(placeToInsertValue).text(elem);
+            }
+          });
+        $(parent).append(toInsert);
+      });
+    }
+    $(html).remove();
+  });
+}

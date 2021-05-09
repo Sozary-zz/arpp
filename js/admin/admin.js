@@ -10,8 +10,14 @@ function render() {
     $(e).css("display", "none");
   });
   Promise.all([getFormations(), getColloquia()]).then((data) => {
-    store["formations"] = data[0];
-    store["colloquia"] = data[1];
+    store["formations"] = data[0].map((f) => {
+      let availablePlaces = f.max_places - f.booked_places;
+      return { ...f, availablePlaces };
+    });
+    store["colloquia"] = data[1].map((f) => {
+      let availablePlaces = f.max_places - f.booked_places;
+      return { ...f, availablePlaces };
+    });
     foreachGenerator();
     $("*[foreach]").each((i, e) => {
       $(e).css("display", "block");
@@ -39,35 +45,6 @@ function deleteEvent(elem, type) {
     },
     "json"
   );
-}
-
-function foreachGenerator() {
-  $("*[foreach]").each((index, item) => {
-    let variable = $(item).attr("foreach");
-    let html = $(item).get();
-    let parent = $(item).parent();
-
-    if (variable in store) {
-      variable = store[variable];
-      variable.forEach((elem, index) => {
-        let toInsert = $(html).clone();
-        $(toInsert)
-          .find("*[foreach-value]")
-          .each((index, placeToInsertValue) => {
-            let valueToInsert = $(placeToInsertValue).attr("foreach-value");
-            if (typeof elem == "object") {
-              if (valueToInsert in elem) {
-                $(placeToInsertValue).text(elem[valueToInsert]);
-              }
-            } else if (typeof elem == "string") {
-              $(placeToInsertValue).text(elem);
-            }
-          });
-        $(parent).append(toInsert);
-      });
-    }
-    $(html).remove();
-  });
 }
 
 function addEvent(type) {

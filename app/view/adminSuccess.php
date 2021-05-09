@@ -14,7 +14,9 @@
                 <div class="row justify-content-between align-items-center">
                   <div class="col-12 align-items-center col-md-3 col-lg-3 col-xl-3" style="display: flex">
                     <span foreach-value="name" class="me-4 fw-semi-bold"></span>
-                    <span foreach-value="date"></span>
+                    <span foreach-value="date"  class="me-4 "></span>
+                    <img src="images/user.svg" width="16"/>
+                    <span foreach-value="availablePlaces"></span>
                   </div>
                   <div class="col-12 col-md-3 col-lg-3 col-xl-3" style="display: flex">
                     <button type="button" class="btn btn-outline-success me-2" data-toggle="tooltip"
@@ -47,7 +49,9 @@
                 <div class="row justify-content-between align-items-center">
                   <div class="col-12 align-items-center col-md-3 col-lg-3 col-xl-3" style="display: flex">
                     <span foreach-value="name" class="me-4 fw-semi-bold"></span>
-                    <span foreach-value="date"></span>
+                    <span foreach-value="date"  class="me-4 "></span>
+                    <img src="images/user.svg" width="16"/>
+                    <span foreach-value="availablePlaces"></span>
                   </div>
                   <div class="col-12 col-md-3 col-lg-3 col-xl-3" style="display: flex">
                     <button type="button" class="btn btn-outline-success me-2" data-toggle="tooltip"

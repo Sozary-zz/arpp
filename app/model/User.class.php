@@ -1,7 +1,7 @@
 <?php
 class User extends Model
 {
-    protected $table = "user";
+    protected static $table = "user";
 
     public static function get($login, $password)
     {

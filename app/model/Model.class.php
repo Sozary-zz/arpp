@@ -73,7 +73,6 @@ class Model
             }, $dataToSend)) . ')';
         }
         $stmt = $connection->prepare($sql);
-
         $paramsType = implode('', array_map(function ($data) {
             return $data['type'];
         }, $dataToSend));
@@ -83,6 +82,7 @@ class Model
         }, $dataToSend));
 
         $stmt->execute();
+
         return $stmt->insert_id;
     }
 }
