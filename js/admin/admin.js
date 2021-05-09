@@ -46,6 +46,14 @@ function editFormation(elem) {
     formationId;
 }
 
+function editColloquium(elem) {
+  let colloquiumId = $(elem).find(".edit-id").text();
+  window.location.href =
+    window.location.href.split("?action=")[0] +
+    "?action=editEvent&type=colloquium&id=" +
+    colloquiumId;
+}
+
 function getFormations() {
   return new Promise((resolve, reject) => {
     $.get(

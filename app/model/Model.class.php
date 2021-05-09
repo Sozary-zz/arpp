@@ -7,10 +7,16 @@ class Model
 
     public function __construct()
     {
+        $this->initColumns();
+    }
+
+    private function initColumns()
+    {
         $sql = "SHOW COLUMNS FROM " . DB . "." . $this->table;
         $connection = context::getConnection()->get();
         $result = $connection->query($sql);
         $this->columns = [];
+
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $this->columns[] = ['field' => $row['Field'], 'type' => strpos($row['Type'], 'varchar') !== false ? 's' : 'i'];
@@ -19,13 +25,28 @@ class Model
         array_shift($this->columns);
     }
 
+    public function __unset($name)
+    {
+        unset($this->data[$name]);
+    }
+
     public function __set($name, $value)
     {
         $this->data[$name] = $value;
     }
 
+    public function __get($name)
+    {
+        return $this->data[$name];
+    }
+
     public function save()
     {
+        $update = false;
+        if (!$this->columns) {
+            $this->initColumns();
+            $update = true;
+        }
         $connection = context::getConnection()->get();
         $dataToSend = array_map(function ($column) {
             if (key_exists($column['field'], $this->data)) {
@@ -36,13 +57,18 @@ class Model
                 ];
             }
         }, $this->columns);
+        if ($update) {
+            $sql = 'UPDATE ' . $this->table . ' SET ' . implode(',', array_map(function ($data) {
+                return $data['column'] . ' = ?';
+            }, $dataToSend)) . ' where id = ' . $this->event_id . ';';
+        } else {
 
-        $sql = 'INSERT INTO ' . $this->table . ' (' . implode(',', array_map(function ($data) {
-            return $data['column'];
-        }, $dataToSend)) . ') VALUES (' . implode(',', array_map(function ($_) {
-            return '?';
-        }, $dataToSend)) . ')';
-
+            $sql = 'INSERT INTO ' . $this->table . ' (' . implode(',', array_map(function ($data) {
+                return $data['column'];
+            }, $dataToSend)) . ') VALUES (' . implode(',', array_map(function ($_) {
+                return '?';
+            }, $dataToSend)) . ')';
+        }
         $stmt = $connection->prepare($sql);
 
         $paramsType = implode('', array_map(function ($data) {

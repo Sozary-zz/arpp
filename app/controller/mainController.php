@@ -11,6 +11,37 @@ class mainController
         return context::SUCCESS;
     }
 
+    public static function updateEvent($request, $context)
+    {
+        if ($request['id'] && $request['type'] && $request['name'] && $request['max_places'] && $request['date']) {
+            switch ($request['type']) {
+                case 'formation':
+                    $event = new Event(Formation::getById($request['id']));
+                    break;
+                case 'colloquium':
+                    $event = new Event(Colloquium::getById($request['id']));
+                    break;
+                default:
+                    echo json_encode(['status' => 403]);
+                    return context::NONE;
+            }
+            $event->name = $request['name'];
+            $event->max_places = $request['max_places'];
+            $event->date = $request['date'];
+
+            unset($event->type);
+            unset($event->id);
+
+            $event->save();
+
+            echo json_encode(['status' => 200]);
+
+        } else {
+            echo json_encode(['status' => 403]);
+        }
+        return context::NONE;
+    }
+
     public static function editEvent($request, $context)
     {
         if ($context->getSessionAttribute('user')) {
@@ -18,25 +49,18 @@ class mainController
                 switch ($request['type']) {
                     case 'formation':
                         $context->payload = Formation::getById($request['id']);
-                        if (!$context->payload) {
-                            $context->redirect('?action=admin');
-                        }
-                        $context->payload =
-                            json_encode($context->payload);
                         break;
                     case 'colloquium':
                         $context->payload = Colloquium::getById($request['id']);
-                        if (!$context->payload) {
-                            $context->redirect('?action=admin');
-                        }
-                        $context->payload =
-                            json_encode($context->payload);
-                        break;
                         break;
                     default:
                         $context->redirect('?action=admin');
                         break;
                 }
+                if (!$context->payload) {
+                    $context->redirect('?action=admin');
+                }
+                $context->payload = json_encode($context->payload);
             } else {
                 $context->redirect('?action=admin');
             }

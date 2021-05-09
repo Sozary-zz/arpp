@@ -67,13 +67,19 @@
                   </div>
                   <div class="col-3" style="display: flex">
                     <button
-                      type="button"
+                     type="button"
                       class="btn btn-outline-success me-2"
                       data-toggle="tooltip"
                       data-placement="top"
                       title="Editer"
+                      onclick="editColloquium(this)"
                     >
                       <i class="fas fa-pencil-alt"></i>
+                      <span
+                        foreach-value="id"
+                        class="edit-id"
+                        style="display: none"
+                      ></span>
                     </button>
                     <button
                       type="button"
