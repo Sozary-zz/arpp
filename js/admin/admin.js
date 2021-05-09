@@ -1,13 +1,39 @@
 window.addEventListener("loaded", () => {
+  render();
+  $(() => {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+});
+
+function render() {
   Promise.all([getFormations(), getColloquia()]).then((data) => {
     store["formations"] = data[0];
     store["colloquia"] = data[1];
     foreachGenerator();
-    $(() => {
-      $('[data-toggle="tooltip"]').tooltip();
-    });
   });
-});
+}
+
+function deleteEvent(elem, type) {
+  let id = $(elem).find(".edit-id").text();
+  $(elem)
+    .parent()
+    .find("button")
+    .each((i, e) => {
+      $(e).attr("disabled", "true");
+    });
+  $.post(
+    "?action=deleteEvent",
+    { type, id },
+    (response) => {
+      if (response.status === 200) {
+        render();
+      } else {
+        alert("Impossible de supprimer cet événement");
+      }
+    },
+    "json"
+  );
+}
 
 function foreachGenerator() {
   $("*[foreach]").each((index, item) => {

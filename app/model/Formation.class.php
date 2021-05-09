@@ -1,7 +1,7 @@
 <?php
 class Formation extends Model
 {
-    protected $table = "formation";
+    protected static $table = "formation";
 
     public function __construct($elements)
     {
@@ -10,10 +10,22 @@ class Formation extends Model
         }
     }
 
+    public static function deleteById($id)
+    {
+        $elem = static::getById($id);
+        $connection = context::getConnection()->get();
+        $sql = "DELETE FROM " . static::$table . " WHERE id = ?";
+        $stmt = $connection->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+
+        Event::deleteById($elem['event_id']);
+    }
+
     public static function getById($id)
     {
         $connection = context::getConnection()->get();
-        $sql = "SELECT *, formation.id as 'id' FROM formation JOIN event WHERE formation.event_id = event.id AND formation.id = ?";
+        $sql = "SELECT *, " . static::$table . ".id as 'id' FROM " . static::$table . " JOIN event WHERE " . static::$table . ".event_id = event.id AND " . static::$table . ".id = ?";
         $stmt = $connection->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
@@ -28,7 +40,7 @@ class Formation extends Model
     public static function getFormations()
     {
         $connection = context::getConnection()->get();
-        $sql = "SELECT *, formation.id as 'id' FROM formation JOIN event WHERE formation.event_id = event.id ";
+        $sql = "SELECT *, " . static::$table . ".id as 'id' FROM " . static::$table . " JOIN event WHERE " . static::$table . ".event_id = event.id ";
         $result = $connection->query($sql);
         $res = [];
         if ($result->num_rows > 0) {

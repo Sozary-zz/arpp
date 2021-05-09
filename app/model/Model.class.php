@@ -1,7 +1,6 @@
 <?php
 class Model
 {
-    protected $table = "";
     protected $data = [];
     private $columns = [];
 

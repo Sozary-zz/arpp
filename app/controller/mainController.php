@@ -11,9 +11,33 @@ class mainController
         return context::SUCCESS;
     }
 
+    public static function deleteEvent($request, $context)
+    {
+        if ($context->getSessionAttribute('user')) {
+            if ($request['id'] && $request['type']) {
+                switch ($request['type']) {
+                    case 'formation':
+                        Formation::deleteById($request['id']);
+                        break;
+                    case 'colloquium':
+                        Colloquium::deleteById($request['id']);
+                        break;
+                    default:
+                        echo json_encode(['status' => 403]);
+                        break;
+                }
+                echo json_encode(['status' => 200]);
+            } else {
+                echo json_encode(['status' => 403]);
+            }
+        }
+
+        return context::NONE;
+    }
+
     public static function updateEvent($request, $context)
     {
-        if ($request['id'] && $request['type'] && $request['name'] && $request['max_places'] && $request['date']) {
+        if ($context->getSessionAttribute('user') && $request['id'] && $request['type'] && $request['name'] && $request['max_places'] && $request['date']) {
             switch ($request['type']) {
                 case 'formation':
                     $event = new Event(Formation::getById($request['id']));

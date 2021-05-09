@@ -1,7 +1,7 @@
 <?php
 class Colloquium extends Model
 {
-    protected $table = "colloquium";
+    protected static $table = "colloquium";
 
     public function __construct($elements)
     {
@@ -10,10 +10,22 @@ class Colloquium extends Model
         }
     }
 
+    public static function deleteById($id)
+    {
+        $elem = static::getById($id);
+        $connection = context::getConnection()->get();
+        $sql = "DELETE FROM " . static::$table . " WHERE id = ?";
+        $stmt = $connection->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+
+        Event::deleteById($elem['event_id']);
+    }
+
     public static function getById($id)
     {
         $connection = context::getConnection()->get();
-        $sql = "SELECT *,colloquium.id as 'id' FROM colloquium JOIN event WHERE colloquium.event_id = event.id AND colloquium.id = ?";
+        $sql = "SELECT *," . static::$table . ".id as 'id' FROM " . static::$table . " JOIN event WHERE " . static::$table . ".event_id = event.id AND " . static::$table . ".id = ?";
         $stmt = $connection->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
@@ -28,7 +40,7 @@ class Colloquium extends Model
     public static function getColloquia()
     {
         $connection = context::getConnection()->get();
-        $sql = "SELECT *, colloquium.id as 'id' FROM colloquium JOIN event WHERE colloquium.event_id = event.id ";
+        $sql = "SELECT *, " . static::$table . ".id as 'id' FROM " . static::$table . " JOIN event WHERE " . static::$table . ".event_id = event.id ";
         $result = $connection->query($sql);
         $res = [];
         if ($result->num_rows > 0) {

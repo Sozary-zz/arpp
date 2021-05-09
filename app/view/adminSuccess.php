@@ -39,8 +39,14 @@
                       data-toggle="tooltip"
                       data-placement="top"
                       title="Supprimer"
+                       onclick="deleteEvent(this, 'formation')"
                     >
                       <i class="far fa-trash-alt"></i>
+                      <span
+                        foreach-value="id"
+                        class="edit-id"
+                        style="display: none"
+                      ></span>
                     </button>
                   </div>
                 </div>
@@ -87,8 +93,14 @@
                       data-toggle="tooltip"
                       data-placement="top"
                       title="Supprimer"
+                      onclick="deleteEvent(this,'colloquium')"
                     >
                       <i class="far fa-trash-alt"></i>
+                      <span
+                        foreach-value="id"
+                        class="edit-id"
+                        style="display: none"
+                      ></span>
                     </button>
                   </div>
                 </div>
